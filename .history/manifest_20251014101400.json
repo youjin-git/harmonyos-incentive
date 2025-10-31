@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "鸿蒙激励计划小助手",
+  "version": "1.0.0",
+  "description": "鸿蒙激励计划小助手",
+  "permissions": [
+    "activeTab"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://developer.huawei.com/consumer/cn/activity/harmonyos-incentive/data-query",
+        "*://developer.huawei.com/consumer/cn/activity/harmonyos-incentive/data-query/"
+      ],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["inject.js"],
+      "matches": ["*://developer.huawei.com/*"]
+    }
+  ]
+}
+
