@@ -11,6 +11,8 @@
 
 [功能特点](#功能特点) • [安装方法](#安装方法) • [使用说明](#使用说明) • [项目结构](#项目结构) • [技术实现](#技术实现)
 
+[![Chrome Web Store](https://img.shields.io/badge/Chrome-安装插件-brightgreen?style=for-the-badge&logo=google-chrome)](https://chromewebstore.google.com/detail/dpakdoaefaobpjcldcjbdohgkgojknki)
+
 </div>
 
 ---
@@ -48,7 +50,20 @@
 
 ## 📦 安装方法
 
-### 方式一：开发者模式安装（推荐）
+### 方式一：Chrome 网上应用店安装（推荐）
+
+1. **访问插件页面**
+   - 点击这里 👉 [Chrome Web Store 安装](https://chromewebstore.google.com/detail/dpakdoaefaobpjcldcjbdohgkgojknki)
+
+2. **安装插件**
+   - 点击"添加至 Chrome"按钮
+   - 在弹出的确认对话框中点击"添加扩展程序"
+   - 等待安装完成
+
+3. **开始使用**
+   - 访问华为鸿蒙激励计划数据查询页面即可自动使用
+
+### 方式二：开发者模式安装（开发测试）
 
 1. **下载项目代码**
    ```bash
@@ -67,10 +82,6 @@
    - 点击"加载已解压的扩展程序"
    - 选择项目所在的文件夹
    - 确认加载成功
-
-### 方式二：直接下载（未来支持）
-
-待发布到 Chrome Web Store 后，可直接在线安装。
 
 ---
 
@@ -291,8 +302,10 @@ A: 可能原因：
 ### Q: 如何更新插件？
 
 A: 
-1. 拉取最新代码：`git pull`
-2. 在扩展管理页面点击刷新图标
+- **从 Chrome 网上应用店安装的用户**：插件会自动更新，无需手动操作
+- **开发者模式安装的用户**：
+  1. 拉取最新代码：`git pull`
+  2. 在扩展管理页面点击刷新图标
 
 ---
 
@@ -304,6 +317,7 @@ A:
 
 ## 🔗 相关链接
 
+- **Chrome 网上应用店**：<a href="https://chromewebstore.google.com/detail/dpakdoaefaobpjcldcjbdohgkgojknki" target="_blank">安装插件</a>
 - **GitHub 仓库**：<a href="https://github.com/zwpro/harmonyos-incentive" target="_blank">https://github.com/zwpro/harmonyos-incentive</a>
 - **华为鸿蒙激励计划**：<a href="https://developer.huawei.com/consumer/cn/activity/harmonyos-incentive" target="_blank">官方页面</a>
 - **问题反馈**：<a href="https://github.com/zwpro/harmonyos-incentive/issues" target="_blank">提交 Issue</a>
