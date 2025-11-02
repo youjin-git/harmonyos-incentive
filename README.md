@@ -79,7 +79,7 @@
 ### 基本使用
 
 1. **访问目标页面**
-   - 打开 [华为鸿蒙激励计划数据查询页面](https://developer.huawei.com/consumer/cn/activity/harmonyos-incentive/data-query)
+   - 打开 <a href="https://developer.huawei.com/consumer/cn/activity/harmonyos-incentive/data-query" target="_blank">华为鸿蒙激励计划数据查询页面</a>
 
 2. **等待数据加载**
    - 插件会自动在页面右侧显示侧边栏
@@ -298,15 +298,15 @@ A:
 
 ## 📄 许可证
 
-本项目基于 [MIT License](LICENSE) 开源。
+本项目基于 <a href="LICENSE" target="_blank">MIT License</a> 开源。
 
 ---
 
 ## 🔗 相关链接
 
-- **GitHub 仓库**：[https://github.com/zwpro/harmonyos-incentive](https://github.com/zwpro/harmonyos-incentive)
-- **华为鸿蒙激励计划**：[官方页面](https://developer.huawei.com/consumer/cn/activity/harmonyos-incentive)
-- **问题反馈**：[提交 Issue](https://github.com/zwpro/harmonyos-incentive/issues)
+- **GitHub 仓库**：<a href="https://github.com/zwpro/harmonyos-incentive" target="_blank">https://github.com/zwpro/harmonyos-incentive</a>
+- **华为鸿蒙激励计划**：<a href="https://developer.huawei.com/consumer/cn/activity/harmonyos-incentive" target="_blank">官方页面</a>
+- **问题反馈**：<a href="https://github.com/zwpro/harmonyos-incentive/issues" target="_blank">提交 Issue</a>
 
 ---
 
