@@ -1,11 +1,43 @@
 // ========== UI渲染模块 ==========
 
 const UIRenderer = {
+  // 渲染活动结束庆祝横幅
+  renderCelebrationBanner() {
+    return `
+      <div class="celebration-banner">
+        <div class="celebration-confetti">🎊</div>
+        <div class="celebration-content">
+          <div class="celebration-title">
+            <span class="celebration-emoji">🎉</span>
+            鸿蒙激励计划圆满结束
+            <span class="celebration-emoji">🎉</span>
+          </div>
+          <div class="celebration-message">
+            感谢每一位开发者的坚持与付出，我们一起见证了鸿蒙生态的成长！
+          </div>
+          <div class="celebration-stats-row">
+            <span class="celebration-tag">📅 2025.7.23 - 2025.12.31</span>
+            <span class="celebration-tag">🚀 鸿蒙生态共建</span>
+            <span class="celebration-tag">💪 开发者力量</span>
+          </div>
+          <div class="celebration-footer">
+            愿所有的努力都有回响，愿所有的付出都有收获 ✨
+          </div>
+          <div class="celebration-footer" style="margin-top: 6px;">
+            👋 我们下个项目再见！
+          </div>
+        </div>
+        <div class="celebration-confetti">🎊</div>
+      </div>
+    `;
+  },
+
   // 渲染统计面板
   renderStatisticsPanel() {
     const stats = Statistics.getAllStats();
     
     return `
+      ${this.renderCelebrationBanner()}
       <div class="stats-panel">
         <!-- 标题栏 -->
         <div class="stats-header">
@@ -94,6 +126,10 @@ const UIRenderer = {
     return `
       <div class="filter-container">
         <div class="filter-row">
+          <div class="filter-group filter-group-search">
+            <span class="filter-label">搜索:</span>
+            <input type="text" class="filter-input" id="filter-name" placeholder="输入应用名称..." />
+          </div>
           <div class="filter-group">
             <span class="filter-label">阶段:</span>
             <select class="filter-select" id="filter-phase">
@@ -168,14 +204,14 @@ const UIRenderer = {
           <tr>
             <th style="width: 30px;"></th>
             <th style="width: 40px;">#</th>
-            <th style="width: 180px;">应用名称</th>
+            <th style="width: 180px; cursor: pointer;" id="sort-name" title="点击排序">应用名称 <span class="sort-icon" id="sort-name-icon">↕</span></th>
             <th style="width: 70px;">类型</th>
             <th style="width: 100px;">阶段状态</th>
-            <th style="width: 90px;">上架日期</th>
-            <th style="width: 65px;" title="昨天新增的日活用户数">昨天新增</th>
-            <th style="width: 60px;" title="上架次日起第1-30天">首月<br><span style="font-size: 10px; font-weight: normal; opacity: 0.7;">(1-30天)</span></th>
-            <th style="width: 60px;" title="上架次日起第31-60天">次月<br><span style="font-size: 10px; font-weight: normal; opacity: 0.7;">(31-60天)</span></th>
-            <th style="width: 60px;" title="上架次日起第61-90天">第三月<br><span style="font-size: 10px; font-weight: normal; opacity: 0.7;">(61-90天)</span></th>
+            <th style="width: 90px; cursor: pointer;" id="sort-date" title="点击排序">上架日期 <span class="sort-icon" id="sort-date-icon">↕</span></th>
+            <th style="width: 65px; cursor: pointer;" id="sort-yesterday" title="昨天新增的日活用户数（点击排序）">昨天新增 <span class="sort-icon" id="sort-yesterday-icon">↕</span></th>
+            <th style="width: 60px; cursor: pointer;" id="sort-phase1" title="上架次日起第1-30天（点击排序）">首月 <span class="sort-icon" id="sort-phase1-icon">↕</span><br><span style="font-size: 10px; font-weight: normal; opacity: 0.7;">(1-30天)</span></th>
+            <th style="width: 60px; cursor: pointer;" id="sort-phase2" title="上架次日起第31-60天（点击排序）">次月 <span class="sort-icon" id="sort-phase2-icon">↕</span><br><span style="font-size: 10px; font-weight: normal; opacity: 0.7;">(31-60天)</span></th>
+            <th style="width: 60px; cursor: pointer;" id="sort-phase3" title="上架次日起第61-90天（点击排序）">第三月 <span class="sort-icon" id="sort-phase3-icon">↕</span><br><span style="font-size: 10px; font-weight: normal; opacity: 0.7;">(61-90天)</span></th>
             <th style="width: 70px;">已获激励</th>
           </tr>
         </thead>

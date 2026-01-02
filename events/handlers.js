@@ -1,10 +1,15 @@
 // ========== 事件处理模块 ==========
 
 const EventHandlers = {
+  // 排序状态: 'none' | 'asc' | 'desc'
+  currentSortColumn: null,
+  currentSortOrder: 'none',
+  
   // 绑定所有事件
   attachAll() {
     this.attachAppRowEvents();
     this.attachFilterEvents();
+    this.attachSortEvents();
     this.attachActionButtonEvents();
     this.attachCommunityButtonEvents();
     this.attachMeritButtonEvents();
@@ -45,6 +50,7 @@ const EventHandlers = {
   
   // 绑定筛选器事件
   attachFilterEvents() {
+    const nameFilter = document.getElementById('filter-name');
     const phaseFilter = document.getElementById('filter-phase');
     const typeFilter = document.getElementById('filter-type');
     const rewardFilter = document.getElementById('filter-reward');
@@ -53,6 +59,7 @@ const EventHandlers = {
     if (!phaseFilter || !typeFilter || !rewardFilter || !statusFilter) return;
     
     const filterApps = () => {
+      const nameValue = nameFilter ? nameFilter.value.trim().toLowerCase() : '';
       const phaseValue = phaseFilter.value;
       const typeValue = typeFilter.value;
       const rewardValue = rewardFilter.value;
@@ -62,6 +69,7 @@ const EventHandlers = {
       const detailRows = document.querySelectorAll('.detail-row');
       
       appRows.forEach((row, index) => {
+        const name = (row.getAttribute('data-name') || '').toLowerCase();
         const phase = row.getAttribute('data-phase');
         const type = row.getAttribute('data-type');
         const reward = row.getAttribute('data-reward');
@@ -69,6 +77,8 @@ const EventHandlers = {
         
         let show = true;
         
+        // 名称搜索筛选
+        if (nameValue && !name.includes(nameValue)) show = false;
         if (phaseValue !== 'all' && phase !== phaseValue) show = false;
         if (typeValue !== 'all' && type !== typeValue) show = false;
         if (rewardValue !== 'all' && reward !== rewardValue) show = false;
@@ -80,10 +90,166 @@ const EventHandlers = {
       });
     };
     
+    // 名称搜索支持实时输入筛选
+    if (nameFilter) {
+      nameFilter.addEventListener('input', filterApps);
+    }
     phaseFilter.addEventListener('change', filterApps);
     typeFilter.addEventListener('change', filterApps);
     rewardFilter.addEventListener('change', filterApps);
     statusFilter.addEventListener('change', filterApps);
+  },
+  
+  // 绑定排序事件
+  attachSortEvents() {
+    const sortColumns = [
+      { id: 'sort-name', dataAttr: 'data-name', type: 'string' },
+      { id: 'sort-date', dataAttr: 'data-date', type: 'date' },
+      { id: 'sort-yesterday', dataAttr: 'data-yesterday', type: 'number' },
+      { id: 'sort-phase1', dataAttr: 'data-phase1', type: 'number' },
+      { id: 'sort-phase2', dataAttr: 'data-phase2', type: 'number' },
+      { id: 'sort-phase3', dataAttr: 'data-phase3', type: 'number' }
+    ];
+    
+    sortColumns.forEach(col => {
+      const sortBtn = document.getElementById(col.id);
+      if (!sortBtn) return;
+      
+      sortBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        this.handleSort(col.id, col.dataAttr, col.type);
+      });
+    });
+  },
+  
+  // 处理排序
+  handleSort(columnId, dataAttr, type) {
+    // 重置其他列的排序图标
+    const allIcons = document.querySelectorAll('.sort-icon');
+    allIcons.forEach(icon => {
+      if (icon.id !== `${columnId}-icon`) {
+        icon.textContent = '↕';
+      }
+    });
+    
+    const sortIcon = document.getElementById(`${columnId}-icon`);
+    
+    // 切换排序状态
+    if (this.currentSortColumn !== columnId || this.currentSortOrder === 'desc') {
+      this.currentSortOrder = 'asc';
+      if (sortIcon) sortIcon.textContent = '↑';
+    } else {
+      this.currentSortOrder = 'desc';
+      if (sortIcon) sortIcon.textContent = '↓';
+    }
+    
+    this.currentSortColumn = columnId;
+    this.sortTable(dataAttr, type);
+  },
+  
+  // 排序表格
+  sortTable(dataAttr, type) {
+    const tbody = document.querySelector('.apps-table tbody');
+    if (!tbody) return;
+    
+    const appRows = Array.from(document.querySelectorAll('.app-row'));
+    const detailRows = Array.from(document.querySelectorAll('.detail-row'));
+    
+    // 根据dataAttr确定列索引
+    const colIndexMap = {
+      'data-name': 2,       // 应用名称是第3列(索引2)
+      'data-date': 5,       // 上架日期是第6列(索引5)
+      'data-yesterday': 6,  // 昨天新增是第7列(索引6)
+      'data-phase1': 7,     // 首月是第8列(索引7)
+      'data-phase2': 8,     // 次月是第9列(索引8)
+      'data-phase3': 9      // 第三月是第10列(索引9)
+    };
+    const colIndex = colIndexMap[dataAttr];
+    
+    // 创建行对数组
+    const rowPairs = appRows.map((appRow, index) => {
+      // 通过列索引获取单元格
+      const cells = appRow.querySelectorAll('td');
+      const cell = cells[colIndex];
+      
+      let value;
+      if (dataAttr === 'data-yesterday') {
+        // 昨日新增：从显示文本解析，因为数据是异步加载的
+        const text = cell ? cell.textContent.trim() : '';
+        if (text === '-' || text === '加载中...') {
+          value = '-9999';
+        } else if (text === '0') {
+          value = '0';
+        } else {
+          // 移除 + 号，解析数字
+          value = text.replace('+', '');
+        }
+      } else if (dataAttr === 'data-name') {
+        // 应用名称：从 tr 的 data-name 属性获取
+        value = appRow.getAttribute('data-name') || '';
+      } else {
+        // 其他列：从 data 属性获取
+        value = cell ? cell.getAttribute(dataAttr) : '';
+      }
+      
+      return {
+        appRow,
+        detailRow: detailRows[index],
+        value
+      };
+    });
+    
+    // 排序
+    rowPairs.sort((a, b) => {
+      let valA, valB;
+      
+      if (type === 'date') {
+        valA = this.parseDate(a.value);
+        valB = this.parseDate(b.value);
+        return this.currentSortOrder === 'asc' ? valA - valB : valB - valA;
+      } else if (type === 'string') {
+        // 字符串类型：使用 localeCompare 进行中文排序
+        valA = a.value || '';
+        valB = b.value || '';
+        return this.currentSortOrder === 'asc' 
+          ? valA.localeCompare(valB, 'zh-CN') 
+          : valB.localeCompare(valA, 'zh-CN');
+      } else {
+        // 数字类型：处理空值、NaN和特殊值
+        valA = a.value === '' || a.value === null ? -Infinity : parseFloat(a.value);
+        valB = b.value === '' || b.value === null ? -Infinity : parseFloat(b.value);
+        if (isNaN(valA)) valA = -Infinity;
+        if (isNaN(valB)) valB = -Infinity;
+        return this.currentSortOrder === 'asc' ? valA - valB : valB - valA;
+      }
+    });
+    
+    // 清空tbody并重新添加排序后的行
+    tbody.innerHTML = '';
+    rowPairs.forEach(({ appRow, detailRow }, index) => {
+      // 更新序号
+      const indexCell = appRow.querySelector('td:nth-child(2)');
+      if (indexCell) {
+        indexCell.textContent = index + 1;
+      }
+      tbody.appendChild(appRow);
+      tbody.appendChild(detailRow);
+    });
+    
+    // 重新绑定应用行事件
+    this.attachAppRowEvents();
+  },
+  
+  // 解析日期字符串为时间戳
+  parseDate(dateStr) {
+    if (!dateStr) return 0;
+    // 支持 YYYY-MM-DD 或 YYYY/MM/DD 格式
+    const parts = dateStr.split(/[-/]/);
+    if (parts.length === 3) {
+      return new Date(parts[0], parts[1] - 1, parts[2]).getTime();
+    }
+    return 0;
   },
   
   // 绑定功能按钮事件

@@ -8,7 +8,7 @@ const AppRowRenderer = {
     const statusByDays = this.getStatusByDays(app.currentPhase, app.daysUntilDeadline);
     
     return `
-      <tr class="app-row" data-app-id="${app.appId}" data-phase="${app.currentPhase}" data-type="${app.appType}" data-reward="${app.estimatedReward > 0 ? 'has' : 'none'}" data-status="${statusByDays}">
+      <tr class="app-row" data-app-id="${app.appId}" data-phase="${app.currentPhase}" data-type="${app.appType}" data-reward="${app.estimatedReward > 0 ? 'has' : 'none'}" data-status="${statusByDays}" data-name="${app.appName}">
         <td style="text-align: center;">
           <span class="expand-icon" data-app-id="${app.appId}">${getIcon('chevronRight', 14, '#999')}</span>
         </td>
@@ -26,11 +26,11 @@ const AppRowRenderer = {
         <td style="padding: 6px 8px;">
           ${this.renderPhaseStatus(phaseInfo, app.daysUntilDeadline)}
         </td>
-        <td style="font-size: 11px;">${app.firstOnShelfDate}</td>
-        <td class="number-cell" style="color: ${this.getYesterdayColor(app.yesterdayIncrement)}; font-weight: 600;">${this.formatYesterdayIncrement(app.yesterdayIncrement)}</td>
-        <td class="number-cell" style="color: ${this.getUserColor(app.phases.phase1.users, 50)}; font-weight: ${app.phases.phase1.users >= 50 ? '600' : '400'};">${app.phases.phase1.users}</td>
-        <td class="number-cell" style="color: ${this.getUserColor(app.phases.phase2.users, 100)}; font-weight: ${app.phases.phase2.users >= 100 ? '600' : '400'};">${app.phases.phase2.users}</td>
-        <td class="number-cell" style="color: ${app.appType === '游戏' ? '#999' : this.getUserColor(app.phases.phase3.users, 200)}; font-weight: ${app.phases.phase3.users >= 200 ? '600' : '400'};">${app.appType === '游戏' ? '-' : app.phases.phase3.users}</td>
+        <td style="font-size: 11px;" data-date="${app.firstOnShelfDate}">${app.firstOnShelfDate}</td>
+        <td class="number-cell" style="color: ${this.getYesterdayColor(app.yesterdayIncrement)}; font-weight: 600;" data-yesterday="${app.yesterdayIncrement === null || app.yesterdayIncrement === undefined ? -9999 : (app.yesterdayIncrement === '-' ? -9998 : app.yesterdayIncrement)}">${this.formatYesterdayIncrement(app.yesterdayIncrement)}</td>
+        <td class="number-cell" style="color: ${this.getUserColor(app.phases.phase1.users, 50)}; font-weight: ${app.phases.phase1.users >= 50 ? '600' : '400'};" data-phase1="${app.phases.phase1.users}">${app.phases.phase1.users}</td>
+        <td class="number-cell" style="color: ${this.getUserColor(app.phases.phase2.users, 100)}; font-weight: ${app.phases.phase2.users >= 100 ? '600' : '400'};" data-phase2="${app.phases.phase2.users}">${app.phases.phase2.users}</td>
+        <td class="number-cell" style="color: ${app.appType === '游戏' ? '#999' : this.getUserColor(app.phases.phase3.users, 200)}; font-weight: ${app.phases.phase3.users >= 200 ? '600' : '400'};" data-phase3="${app.appType === '游戏' ? -1 : app.phases.phase3.users}">${app.appType === '游戏' ? '-' : app.phases.phase3.users}</td>
         <td class="reward-cell">¥${app.estimatedReward}</td>
       </tr>
       <tr class="detail-row" id="detail-${app.appId}">
