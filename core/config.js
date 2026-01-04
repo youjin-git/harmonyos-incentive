@@ -29,15 +29,17 @@ const AppConfig = {
   // 数据推送配置
   push: {
     storageKey: 'push_config',
+    timerInterval: null,
+    countdown: 60,
     
     // 获取推送配置
     async getConfig() {
       try {
         const result = await chrome.storage.local.get(this.storageKey);
-        return result[this.storageKey] || { enabled: false, url: '' };
+        return result[this.storageKey] || { enabled: false, url: '', autoEnabled: false };
       } catch (error) {
         console.error('获取推送配置失败:', error);
-        return { enabled: false, url: '' };
+        return { enabled: false, url: '', autoEnabled: false };
       }
     },
     
@@ -49,6 +51,53 @@ const AppConfig = {
       } catch (error) {
         console.error('保存推送配置失败:', error);
         return false;
+      }
+    },
+    
+    // 启动定时推送
+    startAutoTimer() {
+      if (this.timerInterval) {
+        clearInterval(this.timerInterval);
+      }
+      
+      this.countdown = 60;
+      this.updateTimerDisplay();
+      
+      this.timerInterval = setInterval(async () => {
+        this.countdown--;
+        this.updateTimerDisplay();
+        
+        if (this.countdown <= 0) {
+          // 执行推送
+          const apps = AppState.getAppsArray();
+          if (apps.length > 0) {
+            await this.pushData(apps, AppState.cutOffTime);
+          }
+          this.countdown = 60;
+        }
+      }, 1000);
+    },
+    
+    // 停止定时推送
+    stopAutoTimer() {
+      if (this.timerInterval) {
+        clearInterval(this.timerInterval);
+        this.timerInterval = null;
+      }
+      this.countdown = 60;
+      this.updateTimerDisplay();
+    },
+    
+    // 更新定时器显示
+    updateTimerDisplay() {
+      const timerEl = document.getElementById('push-timer-display');
+      if (timerEl) {
+        if (this.timerInterval) {
+          timerEl.textContent = `${this.countdown}s 后推送`;
+          timerEl.style.display = 'inline-flex';
+        } else {
+          timerEl.style.display = 'none';
+        }
       }
     },
     
@@ -81,18 +130,17 @@ const AppConfig = {
       };
       
       try {
-        const response = await fetch(config.url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(pushData)
+        // 通过 background script 发送请求，绕过 CORS
+        const response = await chrome.runtime.sendMessage({
+          type: 'PUSH_DATA',
+          url: config.url,
+          data: pushData
         });
         
-        if (response.ok) {
+        if (response.success) {
           return { success: true, message: '推送成功' };
         } else {
-          return { success: false, message: `推送失败: ${response.status}` };
+          return { success: false, message: `推送失败: ${response.status || response.error}` };
         }
       } catch (error) {
         console.error('推送数据失败:', error);

@@ -179,6 +179,7 @@ const UIRenderer = {
       <div class="action-buttons-container">
         <div class="total-count-display">
           总计 <span class="total-count-number">${totalCount}</span> 款
+          <span id="push-timer-display" class="push-timer-display" style="display: none;"></span>
         </div>
         <div class="action-buttons-group">
           <button id="pushSettingsBtn" class="action-btn" title="数据推送设置">
