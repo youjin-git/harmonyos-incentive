@@ -116,6 +116,7 @@ const AppConfig = {
           appId: app.appId,
           appName: app.appName,
           appType: app.appType,
+          firstOnShelfDate: app.firstOnShelfDate || '',
           cutOffTime: cutOffTime || '',
           phaseStatus: app.phaseStatus,
           daysUntilDeadline: app.daysUntilDeadline,
